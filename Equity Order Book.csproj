@@ -15,7 +15,6 @@
     <None Remove="Images\news.png" />
     <None Remove="Images\newsIcon6.png" />
     <None Remove="Images\speakerIcon.png" />
-    <None Remove="newsIcon6.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,7 +55,6 @@
     </Reference>
     <Resource Include="Images\speakerIcon.png" />
     <Resource Include="Images\ViewChartIcon.png" />
-    <Resource Include="newsIcon6.png" />
   </ItemGroup>
 
 </Project>
