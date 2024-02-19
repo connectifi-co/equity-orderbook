@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>Equity_Order_Book</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\broadcast.png" />
+    <None Remove="Images\chart.png" />
+    <None Remove="Images\icons8-news-96.png" />
+    <None Remove="Images\news.png" />
+    <None Remove="Images\newsIcon6.png" />
+    <None Remove="Images\speakerIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\broadcast.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\chart.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\news.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Connectifi.AgentWPF" Version="0.0.3" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2065-prerelease" />
+    <PackageReference Include="Svg.Skia" Version="1.0.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\newsIcon6.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Reference Include="AgentWPF">
+      <HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\AgentWPF.dll</HintPath>
+    </Reference>
+    <Reference Include="ConnectifiDesktopAgent">
+      <HintPath>..\agent-dotnet\ConnectifiDesktopAgent\bin\Debug\net7.0\ConnectifiDesktopAgent.dll</HintPath>
+    </Reference>
+    <Reference Include="MorganStanley.Fdc3">
+      <HintPath>..\agent-dotnet\ConnectifiWpfApp\bin\Debug\net7.0-windows\MorganStanley.Fdc3.dll</HintPath>
+    </Reference>
+    <Reference Include="MorganStanley.Fdc3.NewtonsoftJson">
+      <HintPath>..\agent-dotnet\ConnectifiWpfApp\bin\Debug\net7.0-windows\MorganStanley.Fdc3.NewtonsoftJson.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\agent-dotnet\ConnectifiWpfApp\bin\Debug\net7.0-windows\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Resource Include="Images\speakerIcon.png" />
+    <Resource Include="Images\ViewChartIcon.png" />
+  </ItemGroup>
+
+</Project>
