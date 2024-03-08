@@ -1,7 +1,6 @@
 
 using System.Windows;
 using ConnectifiDesktopAgent.Fdc3;
-using MorganStanley.Fdc3;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

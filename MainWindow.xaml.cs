@@ -9,8 +9,8 @@ using ConnectifiDesktopAgent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using MorganStanley.Fdc3;
-using MorganStanley.Fdc3.Context;
+using Finos.Fdc3;
+using Finos.Fdc3.Context;
 using ConnectifiDesktopAgent.Bridge;
 
 namespace Equity_Order_Book
