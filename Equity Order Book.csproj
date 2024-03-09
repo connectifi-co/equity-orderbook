@@ -1,56 +1,61 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <RootNamespace>Equity_Order_Book</RootNamespace>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<RootNamespace>Equity_Order_Book</RootNamespace>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Images\broadcast.png" />
-    <None Remove="Images\chart.png" />
-    <None Remove="Images\icons8-news-96.png" />
-    <None Remove="Images\news.png" />
-    <None Remove="Images\newsIcon6.png" />
-    <None Remove="Images\speakerIcon.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Images\broadcast.png" />
+		<None Remove="Images\chart.png" />
+		<None Remove="Images\icons8-news-96.png" />
+		<None Remove="Images\news.png" />
+		<None Remove="Images\newsIcon6.png" />
+		<None Remove="Images\speakerIcon.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Images\broadcast.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\chart.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\news.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Images\broadcast.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Images\chart.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Images\news.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Include="Finos.Fdc3" Version="2.0.0-beta.1" />
-	<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0-beta.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
-    <PackageReference Include="Svg.Skia" Version="1.0.0.1" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Images\newsIcon6.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Reference Include="AgentWPF">
-      <HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\AgentWPF.dll</HintPath>
-    </Reference>
-    <Reference Include="ConnectifiDesktopAgent">
-      <HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\ConnectifiDesktopAgent.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\agent-dotnet\ConnectifiWpfApp\bin\Debug\net7.0-windows\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Resource Include="Images\speakerIcon.png" />
-    <Resource Include="Images\ViewChartIcon.png" />
-  </ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Finos.Fdc3" Version="2.0.0-beta.1" />
+		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0-beta.1" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
+		<PackageReference Include="Svg.Skia" Version="1.0.0.1" />
+	</ItemGroup>
+	<ItemGroup Condition="Exists('..\agent-dotnet\AgentWPF\AgentWPF.csproj')">
+		<Reference Include="AgentWPF">
+			<HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\AgentWPF.dll</HintPath>
+		</Reference>
+		<Reference Include="ConnectifiDesktopAgent">
+			<HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\ConnectifiDesktopAgent.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup Condition="!Exists('..\agent-dotnet\AgentWPF\AgentWPF.csproj')">
+		<PackageReference Include="Connectifi.AgentWPF" Version="0.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Images\newsIcon6.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Resource Include="Images\speakerIcon.png" />
+		<Resource Include="Images\ViewChartIcon.png" />
+	</ItemGroup>
 
 </Project>
