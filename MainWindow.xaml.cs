@@ -260,6 +260,11 @@ namespace Equity_Order_Book
 
         private async void Broadcast_Click(object sender, RoutedEventArgs e)
         {
+            if (channelComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a specific Channel to broadcast to");
+                return;
+            }
             var trade = (sender as Button)?.DataContext as Trade;
             if (trade == null) return;
 

@@ -38,7 +38,7 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
 		<PackageReference Include="Svg.Skia" Version="1.0.0.1" />
 	</ItemGroup>
-	<ItemGroup Condition="Exists('..\agent-dotnet\AgentWPF\AgentWPF.csproj')">
+	<ItemGroup Condition="'$(Configuration)' == 'Debug' And Exists('..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows')">
 		<Reference Include="AgentWPF">
 			<HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\AgentWPF.dll</HintPath>
 		</Reference>
