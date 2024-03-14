@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
-using ConnectifiDesktopAgent;
+using Connectifi.DesktopAgent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Finos.Fdc3;
 using Finos.Fdc3.Context;
-using ConnectifiDesktopAgent.Bridge;
+using Connectifi.DesktopAgent.Bridge;
 
 namespace Equity_Order_Book
 {

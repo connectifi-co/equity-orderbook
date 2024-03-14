@@ -1,4 +1,4 @@
-﻿using ConnectifiDesktopAgent.Fdc3;
+﻿using Connectifi.DesktopAgent.Fdc3;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

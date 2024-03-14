@@ -38,15 +38,15 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
 		<PackageReference Include="Svg.Skia" Version="1.0.0.1" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Debug' And Exists('..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows')">
+	<ItemGroup Condition="'$(Configuration)' == 'Debug' And Exists('..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows')">
 		<Reference Include="AgentWPF">
-			<HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\AgentWPF.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
-		<Reference Include="ConnectifiDesktopAgent">
-			<HintPath>..\agent-dotnet\AgentWPF\bin\Debug\net7.0-windows\ConnectifiDesktopAgent.dll</HintPath>
+		<Reference Include="Connectifi.DesktopAgent">
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-	<ItemGroup Condition="!Exists('..\agent-dotnet\AgentWPF\AgentWPF.csproj')">
+	<ItemGroup Condition="!Exists('..\agent-dotnet\Connectifi.DesktopAgent.WPF\Connectifi.DesktopAgent.WPF.csproj')">
 		<PackageReference Include="Connectifi.AgentWPF" Version="0.0.4" />
 	</ItemGroup>
 
