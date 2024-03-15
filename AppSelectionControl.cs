@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
-using ConnectifiDesktopAgent.Fdc3;
+using Connectifi.DesktopAgent.Fdc3;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
