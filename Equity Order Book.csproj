@@ -6,6 +6,7 @@
 		<RootNamespace>Equity_Order_Book</RootNamespace>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
+		<Configurations>Debug;Release;Release-TestLocal;Debug-TestLocal</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -38,17 +39,27 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
 		<PackageReference Include="Svg.Skia" Version="1.0.0.1" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Debug' And Exists('..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows')">
-		<Reference Include="AgentWPF">
+	<ItemGroup Condition="'$(Configuration)' == 'Debug-TestLocal'">
+		<Reference Include="Connectifi.DesktopAgent.WPF">
 			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
 		<Reference Include="Connectifi.DesktopAgent">
 			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-	<ItemGroup Condition="!Exists('..\agent-dotnet\Connectifi.DesktopAgent.WPF\Connectifi.DesktopAgent.WPF.csproj')">
-		<PackageReference Include="Connectifi.AgentWPF" Version="0.0.4" />
+	<ItemGroup Condition="'$(Configuration)' == 'Release-TestLocal'">
+		<Reference Include="Connectifi.DesktopAgent.WPF">
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
+		</Reference>
+		<Reference Include="Connectifi.DesktopAgent">
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
+		</Reference>
 	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.4-alpha.1" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.4-alpha.1" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<Content Include="Images\newsIcon6.png">
