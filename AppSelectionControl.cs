@@ -19,7 +19,7 @@ namespace Equity_Order_Book
     public partial class AppSelectionControl : UserControl
     {
         private readonly HandleIntentResolution handleIntentResolution;
-        public ConnectifiApp SelectedApp { get; private set; }
+        public ConnectifiApp? SelectedApp { get; private set; }
         public ObservableCollection<ConnectifiApp> MyApps { get; set; }
 
         public AppSelectionControl(HandleIntentResolution handleIntentResolution, string currentTicker, string currentIntent)
@@ -62,7 +62,7 @@ namespace Equity_Order_Book
 
         private async void OnImageLoaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.Image img = sender as System.Windows.Controls.Image;
+            var img = sender as System.Windows.Controls.Image;
             if (img != null && img.DataContext is ConnectifiApp dataContext)
             {
                 if (!string.IsNullOrEmpty(dataContext.Browser))
@@ -116,20 +116,23 @@ namespace Equity_Order_Book
             // Parse SVG content
             var svg = new SKSvg();
             svg.Load(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(svgContent)));
-
-            var svgWidth = (int)svg.Picture.CullRect.Width;
-            var svgHeight = (int)svg.Picture.CullRect.Height;
-
-            // Convert to PNG
-            var bitmap = new SKBitmap(svgWidth, svgHeight);
-            using (var canvas = new SKCanvas(bitmap))
+            if (svg?.Picture != null)
             {
-                canvas.DrawPicture(svg.Picture);
-            }
+                var svgWidth = (int)svg.Picture.CullRect.Width;
+                var svgHeight = (int)svg.Picture.CullRect.Height;
 
-            using (var stream = File.OpenWrite(outputPath))
-            {
-                bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+
+                // Convert to PNG
+                var bitmap = new SKBitmap(svgWidth, svgHeight);
+                using (var canvas = new SKCanvas(bitmap))
+                {
+                    canvas.DrawPicture(svg.Picture);
+                }
+
+                using (var stream = File.OpenWrite(outputPath))
+                {
+                    bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+                }
             }
         }
     }

@@ -53,6 +53,10 @@ namespace Equity_Order_Book
             try
 
             {
+                if (currentTicker == null || currentIntent == null)
+                {
+                    throw new Exception("currentTicker and currentIntent should have been set by now");
+                }
                 // TaskCompletionSource<ConnectifiApp> userSelectedApp = new TaskCompletionSource<ConnectifiApp>();
                 var appSelectionControl = new AppSelectionControl(handleIntentResolution, currentTicker, currentIntent);
 

@@ -59,7 +59,7 @@
                     <Label Content="Channel"
                   Foreground="White"
                    Name="ChannelLabel"/>
-                    <ComboBox x:Name="channelComboBox" SelectionChanged="channelComboBox_SelectionChanged" Width="19" Height="25"></ComboBox>
+                    <ComboBox x:Name="channelComboBox" SelectionChanged="ChannelComboBox_SelectionChanged" Width="19" Height="25"></ComboBox>
                 </StackPanel>
             </Grid>
 

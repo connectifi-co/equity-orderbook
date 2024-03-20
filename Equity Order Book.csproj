@@ -56,8 +56,8 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.4-alpha.1" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.4-alpha.1" />
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.4-beta.1" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.4-beta.1" />
 	</ItemGroup>
 
 

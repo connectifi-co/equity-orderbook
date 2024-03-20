@@ -11,7 +11,7 @@ namespace Equity_Order_Book
 {
     public class DisplayTitleInstanceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var app = value as ConnectifiApp;
             if (app != null)
