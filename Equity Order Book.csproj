@@ -36,8 +36,6 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5-alpha.2" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5-alpha.2" />
 		<PackageReference Include="Finos.Fdc3" Version="2.0.0" />
 		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
@@ -45,22 +43,28 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Debug-TestLocal'">
 		<Reference Include="Connectifi.DesktopAgent.WPF">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net462\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
 		<Reference Include="Connectifi.DesktopAgent">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net462\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Release-TestLocal'">
 		<Reference Include="Connectifi.DesktopAgent.WPF">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net462\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
 		<Reference Include="Connectifi.DesktopAgent">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net462\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-
-
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
+	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Images\newsIcon6.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
