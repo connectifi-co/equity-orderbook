@@ -10,8 +10,8 @@ namespace Equity_Order_Book
 {
     public class ColorInfo
     {
-        public required string Name { get; set; }
-        public required string HexCode {  get; set; }
-        public required string Id { get; set; }
+        public string Name { get; set; }
+        public string HexCode {  get; set; }
+        public string Id { get; set; }
     }
 }

@@ -2,11 +2,13 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
+		<LangVersion>8.0</LangVersion>
 		<RootNamespace>Equity_Order_Book</RootNamespace>
-		<Nullable>enable</Nullable>
+		<Nullable>annotations</Nullable>
 		<UseWPF>true</UseWPF>
 		<Configurations>Debug;Release;Release-TestLocal;Debug-TestLocal</Configurations>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -34,8 +36,10 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Finos.Fdc3" Version="2.0.0-beta.1" />
-		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0-beta.1" />
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5-alpha.2" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5-alpha.2" />
+		<PackageReference Include="Finos.Fdc3" Version="2.0.0" />
+		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
 		<PackageReference Include="Svg.Skia" Version="1.0.0.16" />
 	</ItemGroup>
@@ -54,10 +58,6 @@
 		<Reference Include="Connectifi.DesktopAgent">
 			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
-	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.4-beta.1" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.4-beta.1" />
 	</ItemGroup>
 
 

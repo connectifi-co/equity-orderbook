@@ -9,8 +9,8 @@ namespace Equity_Order_Book
     public class Trade
     {
         public int TradeId { get; set; }
-        public required string Ticker { get; set; }
-        public required string Name { get; set; }
+        public string Ticker { get; set; }
+        public string Name { get; set; }
         public int Notional { get; set; }
         public decimal Price { get; set; }
     }

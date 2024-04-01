@@ -12,12 +12,13 @@ using System.Windows.Media;
 using Finos.Fdc3;
 using Finos.Fdc3.Context;
 using Connectifi.DesktopAgent.Bridge;
+using System.Diagnostics;
 
 namespace Equity_Order_Book
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public required DesktopAgent desktopAgent;
+        public DesktopAgent desktopAgent;
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
         private readonly ObservableCollection<ColorInfo> colorList;
@@ -117,7 +118,7 @@ namespace Equity_Order_Book
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DesktopAgentWPF agentControl = new();
+            DesktopAgentWPF agentControl = new DesktopAgentWPF();
             (this.Content as Grid)?.Children.Add(agentControl);
             desktopAgent = await agentControl.CreateAgent("https://dev.connectifi-interop.com", "equityOrderBook@DemoSecure") ?? throw new Exception("Could not create agent");
             if (desktopAgent == null)
@@ -134,6 +135,12 @@ namespace Equity_Order_Book
                 _resolverDialog.ShowAppSelectionAsync(evt.HandleIntentResolution);
             };
             desktopAgent.OnConnectifiEvent += OnConnectifiEvent;
+            desktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+        }
+
+        private void DesktopAgent_OnAgentDebugEvent(object? sender, ConnectifiAgentDebugEvent e)
+        {
+            Debug.WriteLine(e.Message);
         }
 
         private async void OnConnectifiEvent(object? sender, ConnectifiEventArgs e)
@@ -221,6 +228,7 @@ namespace Equity_Order_Book
             try
             {
                 IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                Console.WriteLine(intentResolution.Intent);
             }
             catch (Exception ex)
             {
