@@ -69,6 +69,7 @@
 		<Content Include="Images\newsIcon6.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Reference Include="System.Configuration" />
 		<Resource Include="Images\speakerIcon.png" />
 		<Resource Include="Images\ViewChartIcon.png" />
 	</ItemGroup>

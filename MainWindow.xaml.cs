@@ -159,12 +159,12 @@ namespace Equity_Order_Book
                     }
                 }
 
-                AddContextListener();
-                AddIntentListener();
+                await AddContextListener();
+                await AddIntentListener();
             }
         }
 
-        private async void AddIntentListener()
+        private async Task AddIntentListener()
         {
             var intent = "ViewOrders";
 
@@ -187,10 +187,10 @@ namespace Equity_Order_Book
                 });
             };
 
-            IListener intentListener = await desktopAgent.AddIntentListener(intent, intentHandler);
+            await desktopAgent.AddIntentListener(intent, intentHandler);
         }
 
-        private async void AddContextListener()
+        private async Task AddContextListener()
         {
 
             var contextType = "fdc3.instrument";
@@ -209,7 +209,7 @@ namespace Equity_Order_Book
                 }
             };
 
-            IListener contextListener = await desktopAgent.AddContextListener(contextType, contextHandler);
+            await desktopAgent.AddContextListener(contextType, contextHandler);
         }
 
         private async void ViewNews_Click(object sender, RoutedEventArgs e)
@@ -228,7 +228,7 @@ namespace Equity_Order_Book
             try
             {
                 IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
-                Console.WriteLine(intentResolution.Intent);
+                Console.WriteLine($"News raised intent: {intentResolution.Intent}");
             }
             catch (Exception ex)
             {
@@ -253,6 +253,8 @@ namespace Equity_Order_Book
             try
             {
                 IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                Console.WriteLine($"Chart raised intent: {intentResolution.Intent}");
+
             }
             catch (Exception ex)
             {

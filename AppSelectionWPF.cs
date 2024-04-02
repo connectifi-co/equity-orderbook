@@ -17,7 +17,7 @@ namespace Equity_Order_Book
 {
     internal class AppSelectionWPF
     {
-        private MainWindow _mainWindow;
+        private readonly MainWindow _mainWindow;
         private Window? _window;
         private string? currentTicker;
         private string? currentIntent;
@@ -57,7 +57,6 @@ namespace Equity_Order_Book
                 {
                     throw new Exception("currentTicker and currentIntent should have been set by now");
                 }
-                // TaskCompletionSource<ConnectifiApp> userSelectedApp = new TaskCompletionSource<ConnectifiApp>();
                 var appSelectionControl = new AppSelectionControl(handleIntentResolution, currentTicker, currentIntent);
 
                 _window = new Window
@@ -92,20 +91,10 @@ namespace Equity_Order_Book
 
                 _mainWindow.Effect = new BlurEffect();
                 _window.Show();
-
-                var selectedApp = appSelectionControl.SelectedApp;
-                if (selectedApp != null)
-                {
-                    //TO-DO
-                    // userSelectedApp.SetResult(appSelectionControl.SelectedApp);
-                }
-
-                // return userSelectedApp.Task;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                //return Task.FromResult<ConnectifiAppMetadata>(null); // Handle this appropriately
             }
 
         }

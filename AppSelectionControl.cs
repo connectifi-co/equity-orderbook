@@ -13,6 +13,8 @@ using System.IO;
 using SkiaSharp;
 using System;
 using System.Threading.Tasks;
+using Connectifi.DesktopAgent;
+using System.Configuration;
 
 namespace Equity_Order_Book
 {
@@ -63,21 +65,22 @@ namespace Equity_Order_Book
         private async void OnImageLoaded(object sender, RoutedEventArgs e)
         {
             var img = sender as System.Windows.Controls.Image;
-            if (img != null && img.DataContext is ConnectifiApp dataContext)
+            if (img != null && img.DataContext is ConnectifiApp dataContext && !string.IsNullOrEmpty(dataContext.Browser))
             {
-                if (!string.IsNullOrEmpty(dataContext.Browser))
-                {
-                    string url = "https://dev.connectifi-interop.com/" + dataContext.Browser.ToLower() + ".svg";
-
-                    // Temporary path to save the converted PNG
-                    string tempPngPath = System.IO.Path.GetTempFileName() + ".png";
-
-                    // Convert SVG to PNG
-                    await ConvertSvgUrlToPngAsync(url, tempPngPath);
-
-                    // Load the PNG into the image control
-                    await LoadImageAsync(img, tempPngPath);
+                var connectifiDevServer = ConfigurationManager.AppSettings.Get("connectifiDevServer");
+                if (connectifiDevServer == null) {
+                    throw new InvalidOperationException("connectifiDevServer must be specified in app.config");
                 }
+                string url = $"{connectifiDevServer}{dataContext.Browser.ToLower()}.svg";
+
+                // Temporary path to save the converted PNG
+                string tempPngPath = $"{Path.GetRandomFileName()}.png";
+
+                // Convert SVG to PNG
+                await ConvertSvgUrlToPngAsync(url, tempPngPath);
+
+                // Load the PNG into the image control
+                await LoadImageAsync(img, tempPngPath);
             }
         }
 
