@@ -39,6 +39,6 @@ jobs:
     # Execute all unit tests in the solution
     - name: Debug Build
       run: |
-        dotnet build --configuration Debug
+        dotnet build $env:Solution_Name --configuration Debug
 
    
