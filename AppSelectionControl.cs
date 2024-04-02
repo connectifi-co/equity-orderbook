@@ -119,7 +119,7 @@ namespace Equity_Order_Book
             // Parse SVG content
             var svg = new SKSvg();
             svg.Load(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(svgContent)));
-            if (svg?.Picture != null)
+            if (svg.Picture != null)
             {
                 var svgWidth = (int)svg.Picture.CullRect.Width;
                 var svgHeight = (int)svg.Picture.CullRect.Height;

@@ -55,7 +55,7 @@ namespace Equity_Order_Book
             {
                 if (currentTicker == null || currentIntent == null)
                 {
-                    throw new Exception("currentTicker and currentIntent should have been set by now");
+                    throw new InvalidOperationException("currentTicker and currentIntent should have been set by now");
                 }
                 var appSelectionControl = new AppSelectionControl(handleIntentResolution, currentTicker, currentIntent);
 

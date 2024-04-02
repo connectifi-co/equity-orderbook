@@ -18,7 +18,7 @@ namespace Equity_Order_Book
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public DesktopAgent desktopAgent;
+        public DesktopAgent desktopAgent { get; private set; }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
         private readonly ObservableCollection<ColorInfo> colorList;
@@ -120,10 +120,10 @@ namespace Equity_Order_Book
         {
             DesktopAgentWPF agentControl = new DesktopAgentWPF();
             (this.Content as Grid)?.Children.Add(agentControl);
-            desktopAgent = await agentControl.CreateAgent("https://dev.connectifi-interop.com", "equityOrderBook@DemoSecure") ?? throw new Exception("Could not create agent");
+            desktopAgent = await agentControl.CreateAgent("https://dev.connectifi-interop.com", "equityOrderBook@DemoSecure");
             if (desktopAgent == null)
             {
-                MessageBox.Show("No Agent Created");
+                MessageBox.Show("Could not create Agent.  Shutting down...");
                 Application.Current.Shutdown();
                 return;
             }
@@ -170,7 +170,7 @@ namespace Equity_Order_Book
 
             IntentHandler<Instrument> intentHandler = (context, contextMetadata) =>
             {
-                var ticker = context.ID?.Ticker ?? throw new ArgumentNullException(nameof(context.ID));
+                var ticker = context.ID?.Ticker ?? throw new InvalidOperationException("context must have a non-null ID");
                 var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(ticker)).ToList();
                 TradesFilter.Text = ticker;
 
@@ -197,7 +197,7 @@ namespace Equity_Order_Book
 
             ContextHandler<Instrument> contextHandler = (context, contextMetadata) =>
             {
-                var ticker = context.ID?.Ticker ?? throw new ArgumentNullException(nameof(context.ID));
+                var ticker = context.ID?.Ticker ?? throw new InvalidOperationException("context must have a non-null ID");
                 var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(ticker)).ToList();
                 TradesFilter.Text = ticker;
 
