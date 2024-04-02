@@ -120,7 +120,7 @@ namespace Equity_Order_Book
         {
             DesktopAgentWPF agentControl = new DesktopAgentWPF();
             (this.Content as Grid)?.Children.Add(agentControl);
-            desktopAgent = await agentControl.CreateAgent("https://dev.connectifi-interop.com", "equityOrderBook@DemoSecure");
+            desktopAgent = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
             if (desktopAgent == null)
             {
                 MessageBox.Show("Could not create Agent.  Shutting down...");
