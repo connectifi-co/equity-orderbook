@@ -8,7 +8,7 @@ namespace Equity_Order_Book
 {
     internal static class AppConfig
     {
-        internal static string connectifiHost = "https://dev.connectifi-interop.com";
-        internal static string connectifiAppId = "equityOrderBook@DemoSecure";
+        internal static readonly string connectifiHost = "https://dev.connectifi-interop.com";
+        internal static readonly string connectifiAppId = "equityOrderBook@DemoSecure";
     }
 }
