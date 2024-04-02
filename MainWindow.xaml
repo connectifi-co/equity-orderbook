@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         Title="Equity Order Book"
         Height="613"
+        Icon="Images/connectifi.png"
         SizeToContent="Width"
         Background="#001129"
         Loaded="Window_Loaded"
@@ -21,297 +22,298 @@
         </DataTemplate>
     </Window.Resources>
 
-        <Grid x:Name="ViewGrid">
-            <StackPanel  Margin="10,10,10,10"
-                         HorizontalAlignment="Right">
-                <Grid>
-                    <DockPanel HorizontalAlignment="Left">
-                        <TextBlock  Margin="4"
-                                    Text="Trades"
-                                    Foreground="White"
-                                    FontSize="13"
-                                    VerticalAlignment="Center" />
+    <Grid x:Name="ViewGrid">
+        <DockPanel Margin="10,0,10,10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+            <Grid DockPanel.Dock="Top">
+                <DockPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock  Margin="4"
+                                Text="Trades"
+                                Foreground="White"
+                                FontSize="13"
+                                VerticalAlignment="Center" />
 
-                        <TextBox Width="100"
-                                 Height="20"
-                                 Name="TradesFilter"
-                                 FontWeight="Bold"
-                                 FontSize="13"
-                                 TextChanged="OnTextChanged" />
+                    <TextBox Width="100"
+                             Height="20"
+                             Name="TradesFilter"
+                             FontWeight="Bold"
+                             FontSize="13"
+                             TextChanged="OnTextChanged" />
 
-                        <Button  Height="20"
-                                 Margin="5"
-                                 Name="FilterButton"
-                                 Content="Filter"
-                                 Click="FilterButton_Click"
-                                 IsEnabled="False" />
+                    <Button  Height="20"
+                             Margin="5"
+                             Name="FilterButton"
+                             Content="Filter"
+                             Click="FilterButton_Click"
+                             IsEnabled="False" />
 
-                        <Button x:Name="AllTradesButton"
-                                Click="AllTradesButton_Click"
-                                Content="Clear"
-                                Margin="5"
-                                Height="20"
-                                Visibility="Collapsed"
-                                IsEnabled="False" />
-                    </DockPanel>
+                    <Button x:Name="AllTradesButton"
+                            Click="AllTradesButton_Click"
+                            Content="Clear"
+                            Margin="5"
+                            Height="20"
+                            Visibility="Collapsed"
+                            IsEnabled="False" />
+                </DockPanel>
 
-                    <StackPanel Orientation="Horizontal"
-                                Margin="10,10,10,10"
-                                HorizontalAlignment="Right">
-                        <Label Content="Channel"
-                               Foreground="White"
-                               Name="ChannelLabel" />
-                        <ComboBox x:Name="channelComboBox"
-                                  SelectionChanged="ChannelComboBox_SelectionChanged"
-                                  Width="19"
-                                  Height="25"></ComboBox>
-                    </StackPanel>
-                </Grid>
+                <StackPanel Orientation="Horizontal"
+                            Margin="10,10,10,10"
+                            HorizontalAlignment="Right">
+                    <Label Content="Channel"
+                           Foreground="White"
+                           Name="ChannelLabel" />
+                    <ComboBox x:Name="channelComboBox"
+                              SelectionChanged="ChannelComboBox_SelectionChanged"
+                              Width="19"
+                              Height="25"></ComboBox>
+                </StackPanel>
+            </Grid>
 
-                <Grid>
-                    <DataGrid ItemsSource="{Binding DisplayedTrades}"
-                              
-                              Grid.Row="1"
-                              AutoGenerateColumns="False"
-                              VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"
-                              CanUserAddRows="False"
-                              Background="#002244"
-                              RowBackground="#002244"
-                              AlternatingRowBackground="#001122"
-                              IsReadOnly="True"
-                              Name="OrderBookGrid"
-                              Height="Auto"
-                              RowHeaderWidth="0"
-                              IsEnabled="False">
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="HorizontalContentAlignment"
-                                        Value="Center" />
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Setter Property="Height"
-                                        Value="24" />
-                                <!-- Set your desired row height here -->
-                            </Style>
-                        </DataGrid.RowStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Trade Id"
-                                                Binding="{Binding TradeId}"
-                                                Width="100"
-                                                FontFamily="Lucida Sans Unicode"
-                                                FontSize="15"
-                                                CanUserReorder="False"
-                                                CanUserResize="False"
-                                                CanUserSort="False" />
-                            <DataGridTextColumn Header="Ticker"
-                                                Binding="{Binding Ticker}"
-                                                Width="100"
-                                                FontFamily="Lucida Sans Unicode"
-                                                FontSize="15"
-                                                CanUserReorder="False"
-                                                CanUserResize="False"
-                                                CanUserSort="False">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="HorizontalAlignment"
-                                                Value="Center" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Notional"
-                                                Binding="{Binding Notional, StringFormat=N0}"
-                                                Width="100"
-                                                FontFamily="Lucida Sans Unicode"
-                                                FontSize="15"
-                                                CanUserReorder="False"
-                                                CanUserResize="False"
-                                                CanUserSort="False">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Text"
-                                                Value="{Binding Notional, StringFormat=N0}" />
-                                        <Setter Property="HorizontalAlignment"
-                                                Value="Right" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Price"
-                                                Binding="{Binding Price,  StringFormat=N2}"
-                                                Width="100"
-                                                FontFamily="Lucida Sans Unicode"
-                                                FontSize="15"
-                                                CanUserReorder="False"
-                                                CanUserResize="False"
-                                                CanUserSort="False">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Text"
-                                                Value="{Binding Notional, StringFormat=N2}" />
-                                        <Setter Property="HorizontalAlignment"
-                                                Value="Right" />
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+            <Grid>
+                <DataGrid ItemsSource="{Binding DisplayedTrades}"
+                          Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          CanUserAddRows="False"
+                          Background="#002244"
+                          RowBackground="#002244"
+                          AlternatingRowBackground="#001122"
+                          IsReadOnly="True"
+                          Name="OrderBookGrid"
+                          Height="Auto"
+                          Width="Auto"
+                          RowHeaderWidth="0"
+                          IsEnabled="False">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Center" />
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Height"
+                                    Value="24" />
+                            <!-- Set your desired row height here -->
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Trade Id"
+                                            Binding="{Binding TradeId}"
+                                            Width="100"
+                                            FontFamily="Lucida Sans Unicode"
+                                            FontSize="15"
+                                            CanUserReorder="False"
+                                            CanUserResize="False"
+                                            CanUserSort="False" />
+                        <DataGridTextColumn Header="Ticker"
+                                            Binding="{Binding Ticker}"
+                                            Width="100"
+                                            FontFamily="Lucida Sans Unicode"
+                                            FontSize="15"
+                                            CanUserReorder="False"
+                                            CanUserResize="False"
+                                            CanUserSort="False">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment"
+                                            Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Notional"
+                                            Binding="{Binding Notional, StringFormat=N0}"
+                                            Width="100"
+                                            FontFamily="Lucida Sans Unicode"
+                                            FontSize="15"
+                                            CanUserReorder="False"
+                                            CanUserResize="False"
+                                            CanUserSort="False">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text"
+                                            Value="{Binding Notional, StringFormat=N0}" />
+                                    <Setter Property="HorizontalAlignment"
+                                            Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Price"
+                                            Binding="{Binding Price,  StringFormat=N2}"
+                                            Width="100"
+                                            FontFamily="Lucida Sans Unicode"
+                                            FontSize="15"
+                                            CanUserReorder="False"
+                                            CanUserResize="False"
+                                            CanUserSort="False">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text"
+                                            Value="{Binding Notional, StringFormat=N2}" />
+                                    <Setter Property="HorizontalAlignment"
+                                            Value="Right" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
 
-                            <!-- News Button Column -->
-                            <DataGridTemplateColumn Header="News"
-                                                    Width="85">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="ViewNews_Click"
-                                                x:Name="ViewNewsButton">
-                                            <Button.ToolTip>
-                                                <ToolTip Content="View News"
-                                                         Background="Gray"
-                                                         Foreground="White" />
-                                            </Button.ToolTip>
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Background"
-                                                            Value="Transparent" />
-                                                    <Setter Property="BorderBrush"
-                                                            Value="Transparent" />
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver"
-                                                                 Value="True">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.7" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsEnabled"
-                                                                 Value="False">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.3" />
-                                                            <Setter Property="Background"
-                                                                    Value="Gray" />
-                                                            <Setter Property="BorderBrush"
-                                                                    Value="Gray" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                            <Image Source="/Images/news.png"
-                                                   Height="18"
-                                                   Width="18" />
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                        <!-- News Button Column -->
+                        <DataGridTemplateColumn Header="News"
+                                                Width="85">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Click="ViewNews_Click"
+                                            x:Name="ViewNewsButton">
+                                        <Button.ToolTip>
+                                            <ToolTip Content="View News"
+                                                     Background="Gray"
+                                                     Foreground="White" />
+                                        </Button.ToolTip>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background"
+                                                        Value="Transparent" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.7" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled"
+                                                             Value="False">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.3" />
+                                                        <Setter Property="Background"
+                                                                Value="Gray" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="Gray" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Images/news.png"
+                                               Height="18"
+                                               Width="18" />
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                            <!-- Chart Button Column -->
-                            <DataGridTemplateColumn Header="Chart"
-                                                    Width="85">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="ViewChart_Click"
-                                                x:Name="ViewChartButton">
-                                            <Button.ToolTip>
-                                                <ToolTip Content="View Chart"
-                                                         Background="Gray"
-                                                         Foreground="White" />
-                                            </Button.ToolTip>
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Background"
-                                                            Value="Transparent" />
-                                                    <Setter Property="BorderBrush"
-                                                            Value="Transparent" />
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver"
-                                                                 Value="True">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.7" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsEnabled"
-                                                                 Value="False">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.3" />
-                                                            <Setter Property="Background"
-                                                                    Value="Gray" />
-                                                            <Setter Property="BorderBrush"
-                                                                    Value="Gray" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
+                        <!-- Chart Button Column -->
+                        <DataGridTemplateColumn Header="Chart"
+                                                Width="85">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Click="ViewChart_Click"
+                                            x:Name="ViewChartButton">
+                                        <Button.ToolTip>
+                                            <ToolTip Content="View Chart"
+                                                     Background="Gray"
+                                                     Foreground="White" />
+                                        </Button.ToolTip>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background"
+                                                        Value="Transparent" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.7" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled"
+                                                             Value="False">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.3" />
+                                                        <Setter Property="Background"
+                                                                Value="Gray" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="Gray" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
 
-                                            <Image Source="/Images/chart.png"
-                                                   Height="18"
-                                                   Width="18" />
+                                        <Image Source="/Images/chart.png"
+                                               Height="18"
+                                               Width="18" />
 
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
 
-                            <!-- Broadcast Button Column -->
-                            <DataGridTemplateColumn Header="Broadcast"
-                                                    Width="85">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button x:Name="BroadcastButton"
-                                                Click="Broadcast_Click">
-                                            <Button.ToolTip>
-                                                <ToolTip Content="Broadcast"
-                                                         Background="Gray"
-                                                         Foreground="White" />
-                                            </Button.ToolTip>
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Background"
-                                                            Value="Transparent" />
-                                                    <Setter Property="BorderBrush"
-                                                            Value="Transparent" />
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver"
-                                                                 Value="True">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.7" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsEnabled"
-                                                                 Value="False">
-                                                            <Setter Property="Opacity"
-                                                                    Value="0.3" />
-                                                            <Setter Property="Background"
-                                                                    Value="Gray" />
-                                                            <Setter Property="BorderBrush"
-                                                                    Value="Gray" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
+                        <!-- Broadcast Button Column -->
+                        <DataGridTemplateColumn Header="Broadcast"
+                                                Width="85">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="BroadcastButton"
+                                            Click="Broadcast_Click">
+                                        <Button.ToolTip>
+                                            <ToolTip Content="Broadcast"
+                                                     Background="Gray"
+                                                     Foreground="White" />
+                                        </Button.ToolTip>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background"
+                                                        Value="Transparent" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.7" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled"
+                                                             Value="False">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.3" />
+                                                        <Setter Property="Background"
+                                                                Value="Gray" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="Gray" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
 
-                                            <Image Source="/Images/broadcast.png"
-                                                   Height="18"
-                                                   Width="18" />
+                                        <Image Source="/Images/broadcast.png"
+                                               Height="18"
+                                               Width="18" />
 
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
 
-                        <DataGrid.Resources>
-                            <!-- Setting the cell style for text content -->
-                            <Style TargetType="{x:Type DataGridCell}">
-                                <Setter Property="Foreground"
-                                        Value="White" />
-                            </Style>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                             Color="Blue" />
-                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-                                             Color="Blue" />
-                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                             Color="Blue" />
+                    <DataGrid.Resources>
+                        <!-- Setting the cell style for text content -->
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Foreground"
+                                    Value="White" />
+                        </Style>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                         Color="Blue" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                         Color="Blue" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                         Color="Blue" />
 
-                        </DataGrid.Resources>
+                    </DataGrid.Resources>
 
-                    </DataGrid>
-                </Grid>
+                </DataGrid>
+            </Grid>
 
-            </StackPanel>
-        </Grid>
+        </DockPanel>
+    </Grid>
 </Window>

@@ -14,6 +14,7 @@
 	<ItemGroup>
 		<None Remove="Images\broadcast.png" />
 		<None Remove="Images\chart.png" />
+		<None Remove="Images\connectifi.png" />
 		<None Remove="Images\icons8-news-96.png" />
 		<None Remove="Images\news.png" />
 		<None Remove="Images\newsIcon6.png" />
@@ -26,6 +27,9 @@
 		</Content>
 		<Content Include="Images\chart.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Images\connectifi.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Images\news.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
