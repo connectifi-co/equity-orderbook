@@ -1,0 +1,44 @@
+name: Build for Pull Request and/or Push
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    name: "Build/Test for Main PR and Push"
+    timeout-minutes: 8
+    runs-on: windows-latest
+    env:
+      Solution_Name: equity-order-book.sln
+  
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Install the .NET (non-framework) versions
+    - name: Install .NET versions
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: | 
+          7.0.x
+          8.0.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[17.9,18.0)'
+
+    # Execute all unit tests in the solution
+    - name: Debug Build
+      run: |
+        dotnet build --configuration Debug
+
+   
