@@ -13,20 +13,21 @@ using System.IO;
 using SkiaSharp;
 using System;
 using System.Threading.Tasks;
-using Connectifi.DesktopAgent;
-using System.Configuration;
+using System.Collections.Generic;
 
 namespace Equity_Order_Book
 {
     public partial class AppSelectionControl : UserControl
     {
         private readonly HandleIntentResolution handleIntentResolution;
+        private Stack<string> filesToDelete = new Stack<string>();
         public ConnectifiApp? SelectedApp { get; private set; }
         public ObservableCollection<ConnectifiApp> MyApps { get; set; }
 
         public AppSelectionControl(HandleIntentResolution handleIntentResolution, string currentTicker, string currentIntent)
         {
             this.handleIntentResolution = handleIntentResolution;
+            this.Unloaded += AppSelectionControl_Unloaded;
             InitializeComponent();
 
             this.DataContext = this;
@@ -77,9 +78,19 @@ namespace Equity_Order_Book
 
                 // Load the PNG into the image control
                 await LoadImageAsync(img, tempPngPath);
+
+                filesToDelete.Push(tempPngPath);
             }
         }
 
+        private void AppSelectionControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            while (filesToDelete.Count > 0)
+            {
+                var file = filesToDelete.Pop();
+                File.Delete(file);
+            }
+        }
 
         private async Task LoadImageAsync(System.Windows.Controls.Image img, string url)
         {
