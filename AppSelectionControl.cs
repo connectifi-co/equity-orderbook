@@ -67,14 +67,10 @@ namespace Equity_Order_Book
             var img = sender as System.Windows.Controls.Image;
             if (img != null && img.DataContext is ConnectifiApp dataContext && !string.IsNullOrEmpty(dataContext.Browser))
             {
-                var connectifiDevServer = ConfigurationManager.AppSettings.Get("connectifiDevServer");
-                if (connectifiDevServer == null) {
-                    throw new InvalidOperationException("connectifiDevServer must be specified in app.config");
-                }
-                string url = $"{connectifiDevServer}{dataContext.Browser.ToLower()}.svg";
+                string url = $"{AppConfig.connectifiHost}/{dataContext.Browser.ToLower()}.svg";
 
                 // Temporary path to save the converted PNG
-                string tempPngPath = $"{Path.GetRandomFileName()}.png";
+                string tempPngPath = $"{Path.GetTempPath()}{Path.GetRandomFileName()}.png";
 
                 // Convert SVG to PNG
                 await ConvertSvgUrlToPngAsync(url, tempPngPath);
