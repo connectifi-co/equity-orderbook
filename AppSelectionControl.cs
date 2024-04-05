@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows;
 using Connectifi.DesktopAgent.Fdc3;
-using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -20,7 +19,7 @@ namespace Equity_Order_Book
     public partial class AppSelectionControl : UserControl
     {
         private readonly HandleIntentResolution handleIntentResolution;
-        private Stack<string> filesToDelete = new Stack<string>();
+        private readonly Stack<string> filesToDelete = new Stack<string>();
         public ConnectifiApp? SelectedApp { get; private set; }
         public ObservableCollection<ConnectifiApp> MyApps { get; set; }
 
