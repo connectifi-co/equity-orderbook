@@ -11,9 +11,9 @@ namespace Equity_Order_Book
 {
     public class StringToImageSourceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string urlString = value as string;
+            string? urlString = value as string ?? null;
             if (!string.IsNullOrEmpty(urlString))
             {
                 return new BitmapImage(new Uri(urlString, UriKind.Absolute));

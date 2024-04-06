@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         Title="Equity Order Book"
         Height="613"
+        Icon="Images/connectifi.png"
         SizeToContent="Width"
         Background="#001129"
         Loaded="Window_Loaded"
@@ -21,11 +22,12 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid>
-        <StackPanel  Margin="10,10,10,10"
-                     HorizontalAlignment="Right">
-            <Grid>
-                <DockPanel HorizontalAlignment="Left">
+    <Grid x:Name="ViewGrid">
+        <DockPanel Margin="10,0,10,10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+            <Grid DockPanel.Dock="Top">
+                <DockPanel HorizontalAlignment="Left" VerticalAlignment="Center">
                     <TextBlock  Margin="4"
                                 Text="Trades"
                                 Foreground="White"
@@ -62,7 +64,7 @@
                            Foreground="White"
                            Name="ChannelLabel" />
                     <ComboBox x:Name="channelComboBox"
-                              SelectionChanged="channelComboBox_SelectionChanged"
+                              SelectionChanged="ChannelComboBox_SelectionChanged"
                               Width="19"
                               Height="25"></ComboBox>
                 </StackPanel>
@@ -70,7 +72,6 @@
 
             <Grid>
                 <DataGrid ItemsSource="{Binding DisplayedTrades}"
-                          Width="{Binding RelativeSource={RelativeSource Self}, Path=Columns.Width}"
                           Grid.Row="1"
                           AutoGenerateColumns="False"
                           VerticalAlignment="Stretch"
@@ -82,6 +83,7 @@
                           IsReadOnly="True"
                           Name="OrderBookGrid"
                           Height="Auto"
+                          Width="Auto"
                           RowHeaderWidth="0"
                           IsEnabled="False">
                     <DataGrid.ColumnHeaderStyle>
@@ -312,6 +314,6 @@
                 </DataGrid>
             </Grid>
 
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

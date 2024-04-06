@@ -2,16 +2,19 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
+		<LangVersion>8.0</LangVersion>
 		<RootNamespace>Equity_Order_Book</RootNamespace>
-		<Nullable>enable</Nullable>
+		<Nullable>annotations</Nullable>
 		<UseWPF>true</UseWPF>
 		<Configurations>Debug;Release;Release-TestLocal;Debug-TestLocal</Configurations>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Remove="Images\broadcast.png" />
 		<None Remove="Images\chart.png" />
+		<None Remove="Images\connectifi.png" />
 		<None Remove="Images\icons8-news-96.png" />
 		<None Remove="Images\news.png" />
 		<None Remove="Images\newsIcon6.png" />
@@ -25,6 +28,9 @@
 		<Content Include="Images\chart.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Images\connectifi.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Images\news.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -34,37 +40,40 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Finos.Fdc3" Version="2.0.0-beta.1" />
-		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0-beta.1" />
+		<PackageReference Include="Finos.Fdc3" Version="2.0.0" />
+		<PackageReference Include="Finos.Fdc3.NewtonsoftJson" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
 		<PackageReference Include="Svg.Skia" Version="1.0.0.16" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Debug-TestLocal'">
 		<Reference Include="Connectifi.DesktopAgent.WPF">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net462\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
 		<Reference Include="Connectifi.DesktopAgent">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Debug\net462\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Release-TestLocal'">
 		<Reference Include="Connectifi.DesktopAgent.WPF">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.WPF.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net462\Connectifi.DesktopAgent.WPF.dll</HintPath>
 		</Reference>
 		<Reference Include="Connectifi.DesktopAgent">
-			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net7.0-windows\Connectifi.DesktopAgent.dll</HintPath>
+			<HintPath>..\agent-dotnet\Connectifi.DesktopAgent.WPF\bin\Release\net462\Connectifi.DesktopAgent.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-	<ItemGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.4-alpha.3" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.4-alpha.3" />
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
 	</ItemGroup>
-
-
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
+	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Images\newsIcon6.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Reference Include="System.Configuration" />
 		<Resource Include="Images\speakerIcon.png" />
 		<Resource Include="Images\ViewChartIcon.png" />
 	</ItemGroup>

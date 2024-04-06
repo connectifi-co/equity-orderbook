@@ -12,20 +12,20 @@ using System.Windows.Media;
 using Finos.Fdc3;
 using Finos.Fdc3.Context;
 using Connectifi.DesktopAgent.Bridge;
+using System.Diagnostics;
 
 namespace Equity_Order_Book
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        DesktopAgent desktopAgent;
+        public DesktopAgent desktopAgent { get; private set; }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
-        private ObservableCollection<ColorInfo> colorList;
+        private readonly ObservableCollection<ColorInfo> colorList;
         private string _currentIntent { get; set; } = "";
         private string _currentTicker { get; set; } = "";
-        public event PropertyChangedEventHandler PropertyChanged;
-        private bool _initialized = false;
-        private AppSelectionWPF _resolverDialog;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private AppSelectionWPF? _resolverDialog;
 
         public MainWindow()
         {
@@ -51,7 +51,7 @@ namespace Equity_Order_Book
 
         }
 
-        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -77,7 +77,7 @@ namespace Equity_Order_Book
         }
 
 
-        private void DisplayedTrades_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DisplayedTrades_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CheckTradesAndUpdateButton();
         }
@@ -96,7 +96,7 @@ namespace Equity_Order_Book
             }
         }
 
-        private bool AreTradesEqual(ObservableCollection<Trade> allTrades, ObservableCollection<Trade> displayedTrades)
+        private static bool AreTradesEqual(ObservableCollection<Trade> allTrades, ObservableCollection<Trade> displayedTrades)
         {
             // Assuming that trade equality is based on their IDs
             return !allTrades.Except(displayedTrades, new TradeComparer()).Any();
@@ -105,9 +105,9 @@ namespace Equity_Order_Book
         // Implementing IEqualityComparer to compare trades
         public class TradeComparer : IEqualityComparer<Trade>
         {
-            public bool Equals(Trade x, Trade y)
+            public bool Equals(Trade? x, Trade? y)
             {
-                return x.TradeId == y.TradeId; // Assuming trade equality is based on their IDs
+                return x?.TradeId == y?.TradeId; // Assuming trade equality is based on their IDs
             }
 
             public int GetHashCode(Trade obj)
@@ -118,10 +118,15 @@ namespace Equity_Order_Book
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var agentControl = new DesktopAgentWPF();
-            (this.Content as Grid).Children.Add(agentControl);
-            desktopAgent = await agentControl.CreateAgent("https://dev.connectifi-interop.com", "equityOrderBook@DemoSecure");
-
+            DesktopAgentWPF agentControl = new DesktopAgentWPF();
+            (this.Content as Grid)?.Children.Add(agentControl);
+            desktopAgent = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
+            if (desktopAgent == null)
+            {
+                MessageBox.Show("Could not create Agent.  Shutting down...");
+                Application.Current.Shutdown();
+                return;
+            }
             desktopAgent.OnHandleIntentResolution += (_, evt) =>
             {
                 _resolverDialog = new AppSelectionWPF(this);
@@ -130,7 +135,12 @@ namespace Equity_Order_Book
                 _resolverDialog.ShowAppSelectionAsync(evt.HandleIntentResolution);
             };
             desktopAgent.OnConnectifiEvent += OnConnectifiEvent;
-            return;
+            desktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+        }
+
+        private void DesktopAgent_OnAgentDebugEvent(object? sender, ConnectifiAgentDebugEvent e)
+        {
+            Debug.WriteLine(e.Message);
         }
 
         private async void OnConnectifiEvent(object? sender, ConnectifiEventArgs e)
@@ -148,21 +158,21 @@ namespace Equity_Order_Book
                         colorList.Add(new ColorInfo { HexCode = channel.DisplayMetadata.Color, Name = channel.DisplayMetadata.Name, Id = channel.Id });
                     }
                 }
-                _initialized = true;
 
-                addContextListener();
-                addIntentListener();
+                await AddContextListener();
+                await AddIntentListener();
             }
         }
 
-        private async void addIntentListener()
+        private async Task AddIntentListener()
         {
             var intent = "ViewOrders";
 
             IntentHandler<Instrument> intentHandler = (context, contextMetadata) =>
             {
-                var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(context.ID.Ticker)).ToList();
-                TradesFilter.Text = context.ID.Ticker;
+                var ticker = context.ID?.Ticker ?? throw new InvalidOperationException("context must have a non-null ID");
+                var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(ticker)).ToList();
+                TradesFilter.Text = ticker;
 
                 // Update DisplayedTrades based on matching criteria
                 DisplayedTrades.Clear();
@@ -177,18 +187,19 @@ namespace Equity_Order_Book
                 });
             };
 
-            IListener intentListener = await desktopAgent.AddIntentListener(intent, intentHandler);
+            await desktopAgent.AddIntentListener(intent, intentHandler);
         }
 
-        private async void addContextListener()
+        private async Task AddContextListener()
         {
 
             var contextType = "fdc3.instrument";
 
             ContextHandler<Instrument> contextHandler = (context, contextMetadata) =>
             {
-                var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(context.ID.Ticker)).ToList();
-                TradesFilter.Text = context.ID.Ticker;
+                var ticker = context.ID?.Ticker ?? throw new InvalidOperationException("context must have a non-null ID");
+                var matchingTrades = AllTrades.Where(trade => trade.Ticker.ToUpper().Equals(ticker)).ToList();
+                TradesFilter.Text = ticker;
 
                 // Update DisplayedTrades based on matching criteria
                 DisplayedTrades.Clear();
@@ -198,7 +209,7 @@ namespace Equity_Order_Book
                 }
             };
 
-            IListener contextListener = await desktopAgent.AddContextListener(contextType, contextHandler);
+            await desktopAgent.AddContextListener(contextType, contextHandler);
         }
 
         private async void ViewNews_Click(object sender, RoutedEventArgs e)
@@ -217,10 +228,11 @@ namespace Equity_Order_Book
             try
             {
                 IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                Console.WriteLine($"News raised intent: {intentResolution.Intent}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No Applications Found For {intent}");
+                MessageBox.Show($"No Applications Found For {intent}: {ex.Message}");
             }
         }
 
@@ -237,14 +249,16 @@ namespace Equity_Order_Book
             _currentTicker = ticker;
 
 
-            IContext context = new Context(contextType, new { Ticker = trade.Ticker }, trade.Name);
+            IContext context = new Context(contextType, new { trade.Ticker }, trade.Name);
             try
             {
                 IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                Console.WriteLine($"Chart raised intent: {intentResolution.Intent}");
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No Applications Found For {intent}");
+                MessageBox.Show($"No Applications Found For {intent}: {ex.Message}");
             }
         }
 
@@ -276,14 +290,14 @@ namespace Equity_Order_Book
 
         }
 
-        private void channelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs args)
+        private void ChannelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs args)
         {
             if (channelComboBox.SelectedItem != null)
             {
                 ColorInfo selectedColor = (ColorInfo)channelComboBox.SelectedItem;
                 string colorId = selectedColor.Id;
                 desktopAgent.JoinUserChannel(colorId);
-                SolidColorBrush brush = (SolidColorBrush)new BrushConverter().ConvertFrom(selectedColor.HexCode);
+                var brush = new BrushConverter().ConvertFrom(selectedColor.HexCode) as SolidColorBrush;
                 ChannelLabel.Foreground = brush;
             }
         }

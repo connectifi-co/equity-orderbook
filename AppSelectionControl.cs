@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows;
 using Connectifi.DesktopAgent.Fdc3;
-using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -13,18 +12,21 @@ using System.IO;
 using SkiaSharp;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Equity_Order_Book
 {
     public partial class AppSelectionControl : UserControl
     {
         private readonly HandleIntentResolution handleIntentResolution;
-        public ConnectifiApp SelectedApp { get; private set; }
+        private readonly Stack<string> filesToDelete = new Stack<string>();
+        public ConnectifiApp? SelectedApp { get; private set; }
         public ObservableCollection<ConnectifiApp> MyApps { get; set; }
 
         public AppSelectionControl(HandleIntentResolution handleIntentResolution, string currentTicker, string currentIntent)
         {
             this.handleIntentResolution = handleIntentResolution;
+            this.Unloaded += AppSelectionControl_Unloaded;
             InitializeComponent();
 
             this.DataContext = this;
@@ -62,25 +64,32 @@ namespace Equity_Order_Book
 
         private async void OnImageLoaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.Image img = sender as System.Windows.Controls.Image;
-            if (img != null && img.DataContext is ConnectifiApp dataContext)
+            var img = sender as System.Windows.Controls.Image;
+            if (img != null && img.DataContext is ConnectifiApp dataContext && !string.IsNullOrEmpty(dataContext.Browser))
             {
-                if (!string.IsNullOrEmpty(dataContext.Browser))
-                {
-                    string url = "https://dev.connectifi-interop.com/" + dataContext.Browser.ToLower() + ".svg";
+                string url = $"{AppConfig.connectifiHost}/{dataContext.Browser.ToLower()}.svg";
 
-                    // Temporary path to save the converted PNG
-                    string tempPngPath = System.IO.Path.GetTempFileName() + ".png";
+                // Temporary path to save the converted PNG
+                string tempPngPath = $"{Path.GetTempPath()}{Path.GetRandomFileName()}.png";
 
-                    // Convert SVG to PNG
-                    await ConvertSvgUrlToPngAsync(url, tempPngPath);
+                // Convert SVG to PNG
+                await ConvertSvgUrlToPngAsync(url, tempPngPath);
 
-                    // Load the PNG into the image control
-                    await LoadImageAsync(img, tempPngPath);
-                }
+                // Load the PNG into the image control
+                await LoadImageAsync(img, tempPngPath);
+
+                filesToDelete.Push(tempPngPath);
             }
         }
 
+        private void AppSelectionControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            while (filesToDelete.Count > 0)
+            {
+                var file = filesToDelete.Pop();
+                File.Delete(file);
+            }
+        }
 
         private async Task LoadImageAsync(System.Windows.Controls.Image img, string url)
         {
@@ -116,20 +125,23 @@ namespace Equity_Order_Book
             // Parse SVG content
             var svg = new SKSvg();
             svg.Load(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(svgContent)));
-
-            var svgWidth = (int)svg.Picture.CullRect.Width;
-            var svgHeight = (int)svg.Picture.CullRect.Height;
-
-            // Convert to PNG
-            var bitmap = new SKBitmap(svgWidth, svgHeight);
-            using (var canvas = new SKCanvas(bitmap))
+            if (svg.Picture != null)
             {
-                canvas.DrawPicture(svg.Picture);
-            }
+                var svgWidth = (int)svg.Picture.CullRect.Width;
+                var svgHeight = (int)svg.Picture.CullRect.Height;
 
-            using (var stream = File.OpenWrite(outputPath))
-            {
-                bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+
+                // Convert to PNG
+                var bitmap = new SKBitmap(svgWidth, svgHeight);
+                using (var canvas = new SKCanvas(bitmap))
+                {
+                    canvas.DrawPicture(svg.Picture);
+                }
+
+                using (var stream = File.OpenWrite(outputPath))
+                {
+                    bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+                }
             }
         }
     }
