@@ -18,7 +18,7 @@ namespace Equity_Order_Book
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public DesktopAgent desktopAgent { get; private set; }
+        public DesktopAgent DesktopAgent { get; private set; }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
         private readonly ObservableCollection<ColorInfo> colorList;
@@ -120,22 +120,23 @@ namespace Equity_Order_Book
         {
             DesktopAgentWPF agentControl = new DesktopAgentWPF();
             (this.Content as Grid)?.Children.Add(agentControl);
-            desktopAgent = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
-            if (desktopAgent == null)
+            var response = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
+            DesktopAgent = response.Agent;
+            if (response == null)
             {
                 MessageBox.Show("Could not create Agent.  Shutting down...");
                 Application.Current.Shutdown();
                 return;
             }
-            desktopAgent.OnHandleIntentResolution += (_, evt) =>
+            DesktopAgent.OnHandleIntentResolution += (_, evt) =>
             {
                 _resolverDialog = new AppSelectionWPF(this);
                 CurrentIntent = _currentIntent;
                 CurrentTicker = _currentTicker;
                 _resolverDialog.ShowAppSelectionAsync(evt.HandleIntentResolution);
             };
-            desktopAgent.OnConnectifiEvent += OnConnectifiEvent;
-            desktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+            DesktopAgent.OnConnectifiEvent += OnConnectifiEvent;
+            DesktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
         }
 
         private void DesktopAgent_OnAgentDebugEvent(object? sender, ConnectifiAgentDebugEvent e)
@@ -150,7 +151,7 @@ namespace Equity_Order_Book
                 AllTradesButton.IsEnabled = true;
                 FilterButton.IsEnabled = true;
                 OrderBookGrid.IsEnabled = true;
-                var userChannels = await desktopAgent.GetUserChannels();
+                var userChannels = await DesktopAgent.GetUserChannels();
                 foreach (var channel in userChannels)
                 {
                     if (channel.DisplayMetadata != null && channel.DisplayMetadata.Color != null && channel.DisplayMetadata.Name != null)
@@ -187,7 +188,7 @@ namespace Equity_Order_Book
                 });
             };
 
-            await desktopAgent.AddIntentListener(intent, intentHandler);
+            await DesktopAgent.AddIntentListener(intent, intentHandler);
         }
 
         private async Task AddContextListener()
@@ -209,7 +210,7 @@ namespace Equity_Order_Book
                 }
             };
 
-            await desktopAgent.AddContextListener(contextType, contextHandler);
+            await DesktopAgent.AddContextListener(contextType, contextHandler);
         }
 
         private async void ViewNews_Click(object sender, RoutedEventArgs e)
@@ -227,7 +228,7 @@ namespace Equity_Order_Book
             IContext context = new Context(contextType, new { Ticker = trade.Ticker }, trade.Name);
             try
             {
-                IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                IIntentResolution intentResolution = await DesktopAgent.RaiseIntent(intent, context);
                 Console.WriteLine($"News raised intent: {intentResolution.Intent}");
             }
             catch (Exception ex)
@@ -252,7 +253,7 @@ namespace Equity_Order_Book
             IContext context = new Context(contextType, new { trade.Ticker }, trade.Name);
             try
             {
-                IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                IIntentResolution intentResolution = await DesktopAgent.RaiseIntent(intent, context);
                 Console.WriteLine($"Chart raised intent: {intentResolution.Intent}");
 
             }
@@ -286,7 +287,7 @@ namespace Equity_Order_Book
             var instrumentContext = new Instrument(instrumentId);
 
             IContext selectedContext = instrumentContext;
-            await desktopAgent.Broadcast(selectedContext);
+            await DesktopAgent.Broadcast(selectedContext);
 
         }
 
@@ -296,7 +297,7 @@ namespace Equity_Order_Book
             {
                 ColorInfo selectedColor = (ColorInfo)channelComboBox.SelectedItem;
                 string colorId = selectedColor.Id;
-                desktopAgent.JoinUserChannel(colorId);
+                DesktopAgent.JoinUserChannel(colorId);
                 var brush = new BrushConverter().ConvertFrom(selectedColor.HexCode) as SolidColorBrush;
                 ChannelLabel.Foreground = brush;
             }
