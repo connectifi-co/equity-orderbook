@@ -19,6 +19,22 @@ namespace Equity_Order_Book
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public DesktopAgent DesktopAgent { get; private set; }
+        private DesktopAgentWPF? _desktopAgentWPF;
+        public DesktopAgentWPF? DesktopAgentWPF
+        {
+            get
+            {
+                return _desktopAgentWPF;
+            }
+            set
+            {
+                if (_desktopAgentWPF != value)
+                {
+                    _desktopAgentWPF = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
         private readonly ObservableCollection<ColorInfo> colorList;
@@ -122,6 +138,17 @@ namespace Equity_Order_Book
             (this.Content as Grid)?.Children.Add(agentControl);
             var response = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
             DesktopAgent = response.Agent;
+            DesktopAgentWPF = response.AgentWPF;
+            DesktopAgentWPF.AgentState.OnStateChanged += (sender, args) =>
+            {
+                switch (DesktopAgentWPF.AgentState.Type)
+                {
+                    case AgentStateType.LoggingIn:
+                    case AgentStateType.SignedOut:
+                        colorList.Clear();
+                        break;
+                }
+            };
             if (response == null)
             {
                 MessageBox.Show("Could not create Agent.  Shutting down...");
