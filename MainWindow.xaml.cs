@@ -1,24 +1,37 @@
-﻿using System;
+﻿using Connectifi.DesktopAgent;
+using Connectifi.DesktopAgent.Bridge;
+using Finos.Fdc3;
+using Finos.Fdc3.Context;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Collections.ObjectModel;
-using Connectifi.DesktopAgent;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using Finos.Fdc3;
-using Finos.Fdc3.Context;
-using Connectifi.DesktopAgent.Bridge;
-using System.Diagnostics;
 
 namespace Equity_Order_Book
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public DesktopAgent desktopAgent { get; private set; }
+        public DesktopAgent DesktopAgent { get; private set; }
+        private DesktopAgentWPF? _desktopAgentWPF;
+        public DesktopAgentWPF? DesktopAgentWPF
+        {
+            get
+            {
+                return _desktopAgentWPF;
+            }
+            set
+            {
+                _desktopAgentWPF = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
         public ObservableCollection<Trade> DisplayedTrades { get; set; } = new ObservableCollection<Trade>();
         private readonly ObservableCollection<ColorInfo> colorList;
@@ -43,7 +56,7 @@ namespace Equity_Order_Book
                 DisplayedTrades.Add(trade);
             }
             DisplayedTrades.CollectionChanged += DisplayedTrades_CollectionChanged;
-
+            DesktopAgentWPF = new DesktopAgentWPF();
             colorList = new ObservableCollection<ColorInfo>();
             channelComboBox.ItemsSource = colorList;
             channelComboBox.ItemTemplate = (DataTemplate)this.Resources["ColorItemTemplate"];
@@ -118,15 +131,24 @@ namespace Equity_Order_Book
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DesktopAgentWPF agentControl = new DesktopAgentWPF();
-            (this.Content as Grid)?.Children.Add(agentControl);
-            desktopAgent = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
+            (this.Content as Grid)?.Children.Add(DesktopAgentWPF);
+            var desktopAgent = await DesktopAgentWPF.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
             if (desktopAgent == null)
             {
                 MessageBox.Show("Could not create Agent.  Shutting down...");
                 Application.Current.Shutdown();
                 return;
             }
+            DesktopAgentWPF.AgentState.OnStateChanged += (sender, args) =>
+            {
+                switch (DesktopAgentWPF.AgentState.Type)
+                {
+                    case AgentStateType.LoggingIn:
+                    case AgentStateType.SignedOut:
+                        colorList.Clear();
+                        break;
+                }
+            };
             desktopAgent.OnHandleIntentResolution += (_, evt) =>
             {
                 _resolverDialog = new AppSelectionWPF(this);
@@ -136,6 +158,7 @@ namespace Equity_Order_Book
             };
             desktopAgent.OnConnectifiEvent += OnConnectifiEvent;
             desktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+            DesktopAgent = desktopAgent;
         }
 
         private void DesktopAgent_OnAgentDebugEvent(object? sender, ConnectifiAgentDebugEvent e)
@@ -150,7 +173,7 @@ namespace Equity_Order_Book
                 AllTradesButton.IsEnabled = true;
                 FilterButton.IsEnabled = true;
                 OrderBookGrid.IsEnabled = true;
-                var userChannels = await desktopAgent.GetUserChannels();
+                var userChannels = await DesktopAgent.GetUserChannels();
                 foreach (var channel in userChannels)
                 {
                     if (channel.DisplayMetadata != null && channel.DisplayMetadata.Color != null && channel.DisplayMetadata.Name != null)
@@ -187,7 +210,7 @@ namespace Equity_Order_Book
                 });
             };
 
-            await desktopAgent.AddIntentListener(intent, intentHandler);
+            await DesktopAgent.AddIntentListener(intent, intentHandler);
         }
 
         private async Task AddContextListener()
@@ -209,7 +232,7 @@ namespace Equity_Order_Book
                 }
             };
 
-            await desktopAgent.AddContextListener(contextType, contextHandler);
+            await DesktopAgent.AddContextListener(contextType, contextHandler);
         }
 
         private async void ViewNews_Click(object sender, RoutedEventArgs e)
@@ -227,7 +250,7 @@ namespace Equity_Order_Book
             IContext context = new Context(contextType, new { Ticker = trade.Ticker }, trade.Name);
             try
             {
-                IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                IIntentResolution intentResolution = await DesktopAgent.RaiseIntent(intent, context);
                 Console.WriteLine($"News raised intent: {intentResolution.Intent}");
             }
             catch (Exception ex)
@@ -252,7 +275,7 @@ namespace Equity_Order_Book
             IContext context = new Context(contextType, new { trade.Ticker }, trade.Name);
             try
             {
-                IIntentResolution intentResolution = await desktopAgent.RaiseIntent(intent, context);
+                IIntentResolution intentResolution = await DesktopAgent.RaiseIntent(intent, context);
                 Console.WriteLine($"Chart raised intent: {intentResolution.Intent}");
 
             }
@@ -286,7 +309,7 @@ namespace Equity_Order_Book
             var instrumentContext = new Instrument(instrumentId);
 
             IContext selectedContext = instrumentContext;
-            await desktopAgent.Broadcast(selectedContext);
+            await DesktopAgent.Broadcast(selectedContext);
 
         }
 
@@ -296,7 +319,7 @@ namespace Equity_Order_Book
             {
                 ColorInfo selectedColor = (ColorInfo)channelComboBox.SelectedItem;
                 string colorId = selectedColor.Id;
-                desktopAgent.JoinUserChannel(colorId);
+                DesktopAgent.JoinUserChannel(colorId);
                 var brush = new BrushConverter().ConvertFrom(selectedColor.HexCode) as SolidColorBrush;
                 ChannelLabel.Foreground = brush;
             }
