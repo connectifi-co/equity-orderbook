@@ -62,12 +62,12 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Release'">
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.1.0" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.1.0" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
-		<PackageReference Include="Connectifi.DesktopAgent" Version="0.0.5" />
-		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.0.5" />
+		<PackageReference Include="Connectifi.DesktopAgent" Version="0.1.0" />
+		<PackageReference Include="Connectifi.DesktopAgent.WPF" Version="0.1.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Images\newsIcon6.png">
