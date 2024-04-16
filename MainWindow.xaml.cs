@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Connectifi.DesktopAgent;
+using Connectifi.DesktopAgent.Bridge;
+using Finos.Fdc3;
+using Finos.Fdc3.Context;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Collections.ObjectModel;
-using Connectifi.DesktopAgent;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using Finos.Fdc3;
-using Finos.Fdc3.Context;
-using Connectifi.DesktopAgent.Bridge;
-using System.Diagnostics;
 
 namespace Equity_Order_Book
 {
@@ -28,11 +28,8 @@ namespace Equity_Order_Book
             }
             set
             {
-                if (_desktopAgentWPF != value)
-                {
-                    _desktopAgentWPF = value;
-                    OnPropertyChanged();
-                }
+                _desktopAgentWPF = value;
+                OnPropertyChanged();
             }
         }
         public ObservableCollection<Trade> AllTrades { get; set; } = new ObservableCollection<Trade>();
@@ -59,7 +56,7 @@ namespace Equity_Order_Book
                 DisplayedTrades.Add(trade);
             }
             DisplayedTrades.CollectionChanged += DisplayedTrades_CollectionChanged;
-
+            DesktopAgentWPF = new DesktopAgentWPF();
             colorList = new ObservableCollection<ColorInfo>();
             channelComboBox.ItemsSource = colorList;
             channelComboBox.ItemTemplate = (DataTemplate)this.Resources["ColorItemTemplate"];
@@ -134,11 +131,14 @@ namespace Equity_Order_Book
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DesktopAgentWPF agentControl = new DesktopAgentWPF();
-            (this.Content as Grid)?.Children.Add(agentControl);
-            var response = await agentControl.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
-            DesktopAgent = response.Agent;
-            DesktopAgentWPF = response.AgentWPF;
+            (this.Content as Grid)?.Children.Add(DesktopAgentWPF);
+            var desktopAgent = await DesktopAgentWPF.CreateAgent(AppConfig.connectifiHost, AppConfig.connectifiAppId);
+            if (desktopAgent == null)
+            {
+                MessageBox.Show("Could not create Agent.  Shutting down...");
+                Application.Current.Shutdown();
+                return;
+            }
             DesktopAgentWPF.AgentState.OnStateChanged += (sender, args) =>
             {
                 switch (DesktopAgentWPF.AgentState.Type)
@@ -149,21 +149,16 @@ namespace Equity_Order_Book
                         break;
                 }
             };
-            if (response == null)
-            {
-                MessageBox.Show("Could not create Agent.  Shutting down...");
-                Application.Current.Shutdown();
-                return;
-            }
-            DesktopAgent.OnHandleIntentResolution += (_, evt) =>
+            desktopAgent.OnHandleIntentResolution += (_, evt) =>
             {
                 _resolverDialog = new AppSelectionWPF(this);
                 CurrentIntent = _currentIntent;
                 CurrentTicker = _currentTicker;
                 _resolverDialog.ShowAppSelectionAsync(evt.HandleIntentResolution);
             };
-            DesktopAgent.OnConnectifiEvent += OnConnectifiEvent;
-            DesktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+            desktopAgent.OnConnectifiEvent += OnConnectifiEvent;
+            desktopAgent.OnAgentDebugEvent += DesktopAgent_OnAgentDebugEvent;
+            DesktopAgent = desktopAgent;
         }
 
         private void DesktopAgent_OnAgentDebugEvent(object? sender, ConnectifiAgentDebugEvent e)
