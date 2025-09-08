@@ -24,7 +24,7 @@ jobs:
 
     # Install the .NET (non-framework) versions
     - name: Install .NET versions
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: | 
           7.0.x
